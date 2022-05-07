@@ -1,0 +1,34 @@
+---
+
+- name: "Install nginx on ubuntu servers"
+  hosts: all
+  become: true  
+  vars:
+    lbs: <IP address of load balancer server> 
+    nginx_hostname: "lb.mithrams.xyz"
+    nginx_user: ubuntu
+
+  tasks:
+    - name: "Install nginx"
+      apt:
+        name:
+          - nginx
+          - php
+        state: present    
+        update_cache: true  
+
+    - name: "Delete default nginx file"
+      delegate_to: "{{lbs}}"
+      file:
+        path: "{{ item }}"
+        state: absent
+      with_items:
+        - /etc/nginx/sites-available/default
+        - /etc/nginx/sites-enabled/default      
+      
+
+    - name: "restarting/enabling nginx"
+      service:
+        name: nginx
+        state: restarted
+        enabled: true
