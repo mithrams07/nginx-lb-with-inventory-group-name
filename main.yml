@@ -25,7 +25,14 @@
       with_items:
         - /etc/nginx/sites-available/default
         - /etc/nginx/sites-enabled/default      
-      
+  
+    - name: "Creating Virtualhost For nginx"
+      delegate_to: "{{lbs}}"
+      template:
+        src: virtualhost.conf.tmpl
+        dest: "/etc/nginx/sites-available/{{ nginx_hostname }}.conf"
+        owner: root
+        group: root
 
     - name: "restarting/enabling nginx"
       service:
