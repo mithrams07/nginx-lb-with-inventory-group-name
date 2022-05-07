@@ -34,6 +34,14 @@
         owner: root
         group: root
 
+    - name: "Symlink with Configuration file"
+      delegate_to: "{{lbs}}"
+      file:
+        src: "/etc/nginx/sites-available/{{ nginx_hostname }}.conf"
+        dest: "/etc/nginx/sites-enabled/{{ nginx_hostname }}.conf"
+        state: link 
+
+
     - name: "restarting/enabling nginx"
       service:
         name: nginx
