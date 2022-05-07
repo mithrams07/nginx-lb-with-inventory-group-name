@@ -25,7 +25,8 @@
       with_items:
         - /etc/nginx/sites-available/default
         - /etc/nginx/sites-enabled/default      
-  
+      
+
     - name: "Creating Virtualhost For nginx"
       delegate_to: "{{lbs}}"
       template:
@@ -34,13 +35,26 @@
         owner: root
         group: root
 
+
     - name: "Symlink with Configuration file"
       delegate_to: "{{lbs}}"
       file:
         src: "/etc/nginx/sites-available/{{ nginx_hostname }}.conf"
         dest: "/etc/nginx/sites-enabled/{{ nginx_hostname }}.conf"
-        state: link 
+        state: link      
 
+
+    - name: "Copying website contents"
+      delegate_to: "{{item}}"
+      delegate_facts: True
+      copy:
+        src: ./website/
+        dest: "/var/www/html/"
+        owner: "{{ nginx_user }}"
+        group: "{{ nginx_user }}"
+      with_items: "{{groups['backends']}}"
+
+      
 
     - name: "restarting/enabling nginx"
       service:
