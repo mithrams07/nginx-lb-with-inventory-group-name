@@ -4,7 +4,7 @@
   hosts: all
   become: true  
   vars:
-    lbs: <IP address of load balancer server> 
+    lbs: <IP address of nginx load balancer server> 
     nginx_hostname: "lb.mithrams.xyz"
     nginx_user: ubuntu
 
